@@ -21,6 +21,7 @@ function main() {
     // Look up uniform locations
     let resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution")
     let colorLocation = gl.getUniformLocation(program, "u_color")
+    let translationLocation = gl.getUniformLocation(program, "u_translation")
 
     // Create a buffer
     let positionBuffer = gl.createBuffer();
@@ -64,11 +65,11 @@ function main() {
     }, { max: gl.canvas.height })
 
 
-
+    setGeometry(gl)
     drawScene()
 
     function drawScene() {
-        resizeCanvasToDisplaySize(gl)
+        resizeCanvasToDisplaySize(gl.canvas)
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
     
         gl.clearColor(0,0,0,0)
@@ -86,15 +87,50 @@ function main() {
 
         // Update the position buffer and rectangle position
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
-        setRectangle(gl, translation[0], translation[1], width, height)
 
         // Set random color
         gl.uniform4fv(colorLocation, color)
 
+        // Set the translation
+        gl.uniform2fv(translationLocation, translation)
+
         // Draw the rectangle
         let offset = 0
-        let count = 6
+        let count = 18
         gl.drawArrays(gl.TRIANGLES, offset, count)
 
     }
 }
+
+
+// Fill the current ARRAY_BUFFER buffer
+// with the values that define a letter 'F'.
+function setGeometry(gl) {
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([
+            // left column
+            0, 0,
+            30, 0,
+            0, 150,
+            0, 150,
+            30, 0,
+            30, 150,
+    
+            // top rung
+            30, 0,
+            100, 0,
+            30, 30,
+            30, 30,
+            100, 0,
+            100, 30,
+    
+            // middle rung
+            30, 60,
+            67, 60,
+            30, 90,
+            30, 90,
+            67, 60,
+            67, 90]),
+        gl.STATIC_DRAW);
+    }
