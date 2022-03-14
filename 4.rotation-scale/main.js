@@ -19,6 +19,7 @@ function main() {
     var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
 
     // Look up uniform locations
+    let rotationLocation = gl.getUniformLocation(program, "u_rotation")
     let resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution")
     let colorLocation = gl.getUniformLocation(program, "u_color")
     let translationLocation = gl.getUniformLocation(program, "u_translation")
@@ -46,7 +47,8 @@ function main() {
         positionAttributeLocation, size, type, normalize, stride, offset
     )
 
-    let translation = [10, 20] // [x, y]
+    let translation = [100, 200] // [x, y]
+    let rotation = [0, 1]
     let color = [Math.random(), Math.random(), Math.random(), 1]
 
 
@@ -58,9 +60,14 @@ function main() {
     }, { max: gl.canvas.width })
     controls.create("y", newVal => {
         translation[1] = Number(newVal) 
-        console.log(translation)
         drawScene()
     }, { max: gl.canvas.height })
+    controls.create("rotate", newVal => {
+        var angleInRadians = newVal * Math.PI / 180;
+        rotation[0] = Math.sin(angleInRadians);
+        rotation[1] = Math.cos(angleInRadians);
+        drawScene()
+    }, { max: 360 })
 
 
     setGeometry(gl)
@@ -86,8 +93,9 @@ function main() {
         // Set random color
         gl.uniform4fv(colorLocation, color)
 
-        // Set the translation
+        // Set the translation and rotation
         gl.uniform2fv(translationLocation, translation)
+        gl.uniform2fv(rotationLocation, rotation)
 
         // Draw the rectangle
         let offset = 0
