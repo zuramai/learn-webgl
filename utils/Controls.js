@@ -7,7 +7,6 @@ class Controls {
         this.wrapper = typeof wrapper == "string" ? document.querySelector(wrapper) : wrapper
         this.controls = []
 
-
         document.body.appendChild(this.wrapper)
     }
 
@@ -23,6 +22,7 @@ class Controls {
         control.value = 0
         control.type = "range"
         control.max = options.max
+        control.step = options.step ?? 1
 
         // The value 
         let value = document.createElement('label')

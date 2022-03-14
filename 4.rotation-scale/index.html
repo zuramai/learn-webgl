@@ -36,6 +36,7 @@
   uniform vec2 u_resolution;
   uniform vec2 u_translation;
   uniform vec2 u_rotation;
+  uniform vec2 u_scale;
 
   // all shaders have a main function
   void main() {
@@ -45,8 +46,9 @@
       a_position.y * u_rotation.y - a_position.x * u_rotation.x
     );
 
+    vec2 scaledPosition = rotatedPosition * u_scale;
 
-    vec2 position = rotatedPosition + u_translation;
+    vec2 position = scaledPosition + u_translation;
     
     // convert the position from pixels to 0.0 to 1.0
     vec2 zeroToOne = position / u_resolution;

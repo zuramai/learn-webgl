@@ -12,13 +12,13 @@ function main() {
     // Create the program by passing the vertex shader and fragment shader
     let vertexShader = createShader(gl, gl.VERTEX_SHADER, document.querySelector("#vertex-shader-2d").text)
     let fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, document.querySelector("#fragment-shader-2d").text)
-    console.log(vertexShader)
     let program = createProgram(gl, vertexShader, fragmentShader)
 
     // look up where the vertex data needs to go.
     var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
 
     // Look up uniform locations
+    let scaledLocation = gl.getUniformLocation(program, "u_scale")
     let rotationLocation = gl.getUniformLocation(program, "u_rotation")
     let resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution")
     let colorLocation = gl.getUniformLocation(program, "u_color")
@@ -49,6 +49,7 @@ function main() {
 
     let translation = [100, 200] // [x, y]
     let rotation = [0, 1]
+    let scale = [1, 1]
     let color = [Math.random(), Math.random(), Math.random(), 1]
 
 
@@ -62,6 +63,14 @@ function main() {
         translation[1] = Number(newVal) 
         drawScene()
     }, { max: gl.canvas.height })
+    controls.create("scaleX", newVal => {
+        scale[0] = Number(newVal) 
+        drawScene()
+    }, { max: 2, step: 0.1 })
+    controls.create("scaleY", newVal => {
+        scale[1] = Number(newVal) 
+        drawScene()
+    }, { max: 2, step: 0.1 })
     controls.create("rotate", newVal => {
         var angleInRadians = newVal * Math.PI / 180;
         rotation[0] = Math.sin(angleInRadians);
@@ -96,6 +105,7 @@ function main() {
         // Set the translation and rotation
         gl.uniform2fv(translationLocation, translation)
         gl.uniform2fv(rotationLocation, rotation)
+        gl.uniform2fv(scaledLocation, scale)
 
         // Draw the rectangle
         let offset = 0
